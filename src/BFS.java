@@ -9,6 +9,7 @@ public class BFS {
     public static int targetValue = 0;
     public static int deadline = 0;
     public static int queueSize = 0;
+    public static ArrayList<NodeStructure> nodeStructureList = new ArrayList<NodeStructure>();
 
     public class NodeStructure {
         private int value;
@@ -24,26 +25,33 @@ public class BFS {
 
     }
 
+    public static void setParameter (String line) {
+        String[] tempSplited = line.split("\\s+");
+        taskNumber = Integer.parseInt(tempSplited[0]);
+        targetValue = Integer.parseInt(tempSplited[1]);
+        deadline = Integer.parseInt(tempSplited[2]);
+        queueSize = Integer.parseInt(tempSplited[3]);
+    }
 
-    public  static void readFile(String fileName) {
-        ArrayList<NodeStructure> nodeStructureList = new ArrayList<NodeStructure>();
+    public static NodeStructure insertNode (int i, String line) {
+        String[] tempSplited = line.split("\\s+");
+        tempSplited = line.split("\\s+");
+        BFS bfs = new BFS();
+        NodeStructure temp = bfs.new NodeStructure();
+        temp.setValue(Integer.parseInt(tempSplited[0]));
+        temp.setTime(Integer.parseInt(tempSplited[1]));
+        return temp;
+    }
+
+    public static void readFile(String fileName) {
         String line = null;
         try {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(fileName));
             line = bufferedReader.readLine();
-            String[] splited = line.split("\\s+");
-            taskNumber = Integer.parseInt(splited[0]);
-            targetValue = Integer.parseInt(splited[1]);
-            deadline = Integer.parseInt(splited[2]);
-            queueSize = Integer.parseInt(splited[3]);
+            setParameter(line);
             for (int i = 0; i < taskNumber; i++) {
                 line = bufferedReader.readLine();
-                splited = line.split("\\s+");
-                BFS bfs = new BFS();
-                NodeStructure temp = bfs.new NodeStructure();
-                temp.setValue(Integer.parseInt(splited[0]));
-                temp.setTime(Integer.parseInt(splited[1]));
-                nodeStructureList.add(temp);
+                nodeStructureList.add(insertNode(i, line));
             }
             for(NodeStructure nodeStructure :nodeStructureList) {
                 System.out.println("value is " + nodeStructure.value + ", time is " + nodeStructure.time);
