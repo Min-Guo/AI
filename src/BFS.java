@@ -47,8 +47,8 @@ public class BFS {
         tempSplited = line.split("\\s+");
         BFS bfs = new BFS();
         NodeStructure temp = bfs.new NodeStructure();
-        temp.setValue(Integer.parseInt(tempSplited[0]));
-        temp.setTime(Integer.parseInt(tempSplited[1]));
+        temp.setValue(Integer.parseInt(tempSplited[1]));
+        temp.setTime(Integer.parseInt(tempSplited[2]));
         return temp;
     }
 
