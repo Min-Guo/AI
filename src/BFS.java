@@ -14,6 +14,8 @@ public class BFS {
     public class NodeStructure {
         private int value;
         private int time;
+        ArrayList<String> parents = new ArrayList<String>();
+        ArrayList<String> children = new ArrayList<String>();
 
         public void setValue (int value) {
             this.value = value;
@@ -23,6 +25,13 @@ public class BFS {
             this.time = time;
         }
 
+        public void setParents (String parent) {
+            parents.add(parent);
+        }
+
+        public void setChildren (String child) {
+            children.add(child);
+        }
     }
 
     public static void setParameter (String line) {
@@ -43,18 +52,38 @@ public class BFS {
         return temp;
     }
 
+    public static NodeStructure updateNodeChildren (NodeStructure node, String child) {
+        if (! node.children.contains(child)) {
+            node.setChildren(child);
+        }
+        return node;
+    }
+
+    public static NodeStructure updateNodeParents (NodeStructure node, String parent) {
+        if (! node.parents.contains(parent)) {
+            node.setParents(parent);
+        }
+        return node;
+    }
+
+
     public static void readFile(String fileName) {
-        String line = null;
         try {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(fileName));
-            line = bufferedReader.readLine();
+            String line = bufferedReader.readLine();
             setParameter(line);
             for (int i = 0; i < taskNumber; i++) {
                 line = bufferedReader.readLine();
                 nodeStructureList.add(insertNode(i, line));
             }
+            while ((line = bufferedReader.readLine()) != null) {
+                String[] tempSplited = line.split("\\s+");
+                tempSplited = line.split("\\s+");
+                updateNodeChildren(nodeStructureList.get(Integer.parseInt(tempSplited[0])), tempSplited[1]);
+                updateNodeParents(nodeStructureList.get(Integer.parseInt(tempSplited[1])), tempSplited[0]);
+            }
             for(NodeStructure nodeStructure :nodeStructureList) {
-                System.out.println("value is " + nodeStructure.value + ", time is " + nodeStructure.time);
+                System.out.println("value is " + nodeStructure.value + ", time is " + nodeStructure.time + ", parents are " + nodeStructure.parents +", children are " + nodeStructure.children);
             }
             bufferedReader.close();
         }
