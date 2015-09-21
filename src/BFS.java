@@ -111,18 +111,19 @@ public class BFS {
         }
     }
 
-    public static String rootNode () {
+    public static void expandRoot () {
         BFS bfs = new BFS();
         taskStructure source = bfs.new taskStructure();
         source.taskID = "root";
         for (taskStructure tempNode : taskStructureList) {
             if (tempNode.parents.isEmpty()) {
                 source.setChildren(tempNode.taskID);
+                parentQueue.add(tempNode.taskID);
             }
         }
-        System.out.println("node is " + source.taskID + ", value is " + source.value + ", time is " + source.time + ", parents are " + source.parents +", children are " + source.children);
+        /*System.out.println("node is " + source.taskID + ", value is " + source.value + ", time is " + source.time + ", parents are " + source.parents +", children are " + source.children);
 
-        return source.taskID;
+        return source;*/
     }
 
     public static boolean goalTest (String taskSchedule) {
@@ -139,6 +140,7 @@ public class BFS {
         } else {
             return false;
         }
+
     }
 
     public static boolean parentsVisited (String taskSchedule, String task) {
@@ -153,17 +155,17 @@ public class BFS {
     public static void addNextTask (String taskSchedule) {
         for (taskStructure tempTask : taskStructureList) {
             if (!taskSchedule.contains(tempTask.taskID) && tempTask.parents.isEmpty()) {
-                taskSchedule += tempTask;
-                parentQueue.add(taskSchedule);
+                parentQueue.add(taskSchedule + tempTask.taskID);
             }
             if (!taskSchedule.contains(tempTask.taskID) && parentsVisited(taskSchedule, tempTask.taskID)) {
-                taskSchedule += tempTask;
-                parentQueue.add(taskSchedule);
+                parentQueue.add(taskSchedule + tempTask.taskID);
             }
         }
+        System.out.println("Q is " + parentQueue);
     }
 
-    public static void BreathFirstSearch(String taskSchedule) {
+    public static void BreathFirstSearch(String taskSchedule){
+        System.out.println("task is " + taskSchedule);
         if (goalTest(taskSchedule)) {
             System.out.println("Correct Schedule is " + taskSchedule);
             return;
@@ -181,6 +183,9 @@ public class BFS {
             fileName = args[0];
         }
         readFile(fileName);
-        BreathFirstSearch(rootNode());
+        expandRoot();
+        String firstNode = parentQueue.poll();
+        System.out.println("first node is " + firstNode);
+        BreathFirstSearch(firstNode);
     }
 }
