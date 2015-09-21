@@ -154,12 +154,14 @@ public class BFS {
 
     public static void addNextTask (String taskSchedule) {
         for (taskStructure tempTask : taskStructureList) {
-            if (!taskSchedule.contains(tempTask.taskID) && tempTask.parents.isEmpty()) {
-                parentQueue.add(taskSchedule + tempTask.taskID);
+            if (!taskSchedule.contains(tempTask.taskID)) {
+                if ((tempTask.parents.isEmpty()) && (Integer.parseInt(tempTask.taskID) > Character.getNumericValue(taskSchedule.charAt(taskSchedule.length() - 1)))) {
+                    parentQueue.add(taskSchedule + tempTask.taskID);
+                } else if ((!tempTask.parents.isEmpty()) && (parentsVisited(taskSchedule, tempTask.taskID))) {
+                    parentQueue.add(taskSchedule + tempTask.taskID);
+                }
             }
-            if (!taskSchedule.contains(tempTask.taskID) && parentsVisited(taskSchedule, tempTask.taskID)) {
-                parentQueue.add(taskSchedule + tempTask.taskID);
-            }
+
         }
         System.out.println("Q is " + parentQueue);
     }
