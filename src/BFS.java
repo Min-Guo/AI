@@ -111,34 +111,35 @@ public class BFS {
         }
     }
 
-    public static void expandRoot () {
+    public static taskStructure setRoot () {
         BFS bfs = new BFS();
-        taskStructure source = bfs.new taskStructure();
-        source.taskID = "root";
+        taskStructure root = bfs.new taskStructure();
+        root.taskID = "root";
         for (taskStructure tempNode : taskStructureList) {
             if (tempNode.parents.isEmpty()) {
-                source.setChildren(tempNode.taskID);
-                parentQueue.add(tempNode.taskID);
+                root.setChildren(tempNode.taskID);
             }
         }
-        /*System.out.println("node is " + source.taskID + ", value is " + source.value + ", time is " + source.time + ", parents are " + source.parents +", children are " + source.children);
-
-        return source;*/
+        return root;
     }
 
     public static boolean goalTest (String taskSchedule) {
         int tempValue = 0;
         int tempDeadline = 0;
-        char[] cArray = taskSchedule.toCharArray();
-        for (char tempChar: cArray) {
-            tempValue += taskStructureList.get(Character.getNumericValue(tempChar)).value;
-            tempDeadline += taskStructureList.get(Character.getNumericValue(tempChar)).time;
-
-        }
-        if (tempDeadline <= deadline && tempValue >= targetValue) {
-            return true;
-        } else {
+        if (taskSchedule.equals("root")) {
             return false;
+        } else {
+            char[] cArray = taskSchedule.toCharArray();
+            for (char tempChar : cArray) {
+                tempValue += taskStructureList.get(Character.getNumericValue(tempChar)).value;
+                tempDeadline += taskStructureList.get(Character.getNumericValue(tempChar)).time;
+
+            }
+            if (tempDeadline <= deadline && tempValue >= targetValue) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
     }
@@ -153,15 +154,21 @@ public class BFS {
     }
 
     public static void addNextTask (String taskSchedule) {
-        for (taskStructure tempTask : taskStructureList) {
-            if (!taskSchedule.contains(tempTask.taskID)) {
-                if ((tempTask.parents.isEmpty()) && (Integer.parseInt(tempTask.taskID) > Character.getNumericValue(taskSchedule.charAt(taskSchedule.length() - 1)))) {
-                    parentQueue.add(taskSchedule + tempTask.taskID);
-                } else if ((!tempTask.parents.isEmpty()) && (parentsVisited(taskSchedule, tempTask.taskID))) {
-                    parentQueue.add(taskSchedule + tempTask.taskID);
-                }
+        if (taskSchedule.equals("root")) {
+            for (String tempTask : setRoot().children) {
+                parentQueue.add(tempTask);
             }
+        } else {
+            for (taskStructure tempTask : taskStructureList) {
+                if (!taskSchedule.contains(tempTask.taskID)) {
+                    if ((tempTask.parents.isEmpty()) && (Integer.parseInt(tempTask.taskID) > Character.getNumericValue(taskSchedule.charAt(taskSchedule.length() - 1)))) {
+                        parentQueue.add(taskSchedule + tempTask.taskID);
+                    } else if ((!tempTask.parents.isEmpty()) && (parentsVisited(taskSchedule, tempTask.taskID))) {
+                        parentQueue.add(taskSchedule + tempTask.taskID);
+                    }
+                }
 
+            }
         }
         System.out.println("Q is " + parentQueue);
     }
@@ -185,9 +192,6 @@ public class BFS {
             fileName = args[0];
         }
         readFile(fileName);
-        expandRoot();
-        String firstNode = parentQueue.poll();
-        System.out.println("first node is " + firstNode);
-        BreathFirstSearch(firstNode);
+        BreathFirstSearch(setRoot().taskID);
     }
 }

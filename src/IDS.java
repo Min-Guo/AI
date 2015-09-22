@@ -121,8 +121,6 @@ public class IDS {
                 root.setChildren(tempNode.taskID);
             }
         }
-        /*System.out.println("node is " + source.taskID + ", value is " + source.value + ", time is " + source.time + ", parents are " + source.parents +", children are " + source.children);*/
-
         return root;
     }
 
@@ -175,7 +173,6 @@ public class IDS {
 
             }
         }
-        System.out.println("stack is " + parentStack);
 
     }
 
@@ -200,19 +197,16 @@ public class IDS {
                     temp = parentStack.pop();
                     if (goalTest(temp)) {
                         System.out.println("A correct Schedule is " + temp);
-                        return;
+                        break;
                     }
                 } else {
                         while ((!parentStack.isEmpty()) && (levelNumber() != depth)){
                             temp = parentStack.pop();
                             addNextTask(temp);
-                            /*System.out.println("After add : pop is " + temp + ",  Depth is " + depth + ",  stack is " + parentStack);*/
                         }
-                    System.out.println("stack empty " + parentStack.isEmpty() );
                 }
             }
             depth ++ ;
-            System.out.println("depth ++ is " + depth);
             IterativeDeepeningSearch(setRoot().taskID);
         }
         System.out.println("No Answer.");
