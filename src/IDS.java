@@ -186,7 +186,7 @@ public class IDS {
         }
     }
 
-    public static void IterativeDeepeningSearch(String taskSchedule){
+    public static boolean IterativeDeepeningSearch(String taskSchedule){
 
         String temp;
         parentStack.push(taskSchedule);
@@ -197,7 +197,7 @@ public class IDS {
                     temp = parentStack.pop();
                     if (goalTest(temp)) {
                         System.out.println("A correct Schedule is " + temp);
-                        break;
+                        return true;
                     }
                 } else {
                         while ((!parentStack.isEmpty()) && (levelNumber() != depth)){
@@ -207,9 +207,12 @@ public class IDS {
                 }
             }
             depth ++ ;
-            IterativeDeepeningSearch(setRoot().taskID);
+            if(IterativeDeepeningSearch(setRoot().taskID)) {
+                return true;
+            }
         }
         System.out.println("No Answer.");
+        return false;
     }
 
 
