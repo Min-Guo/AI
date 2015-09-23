@@ -35,7 +35,7 @@ public class CreateInput {
             taskList.add(i);
         }
         for (int i = 0; i < taskNumber ; i++) {
-            int j = rand.nextInt((taskNumber - i) ) + i;
+            int j = rand.nextInt((taskNumber - i)) + i;
             Collections.swap(taskList, i, j);
         }
     }
@@ -57,7 +57,6 @@ public class CreateInput {
         for (int i = 0; i < taskNumber; i++) {
             for (int j = i + 1; j < taskNumber; j++) {
                 probability = randNumber.nextInt(2) + 1;
-                System.out.println("Pro: " + probability);
                 if (probability == 2) {
                     writer.println(taskList.get(i) + " " + taskList.get(j));
                 }

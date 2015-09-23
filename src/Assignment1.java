@@ -3,10 +3,12 @@
  */
 import javax.xml.soap.Node;
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.*;
 import java.lang.*;
 
 public class Assignment1 {
+    public static int stateNumber = 0;
     public static int taskNumber = 0;
     public static int targetValue = 0;
     public static int deadline = 0;
@@ -14,9 +16,10 @@ public class Assignment1 {
     public static int actualValue = 0;
     public static int actualTime = 0;
     public static ArrayList<taskStructure> taskStructureList = new ArrayList<taskStructure>();
-    public static Stack<String> parentStack = new Stack<String>();
+    public static Stack<String> parentStack = new Stack<String>();/* Stack in ids */
     public static Queue<String> parentQueue = new LinkedList<String>();
 
+    /* create taskStructure class to present each task node */
     public class taskStructure {
         private int value;
         private int time;
@@ -53,6 +56,7 @@ public class Assignment1 {
         queueSize = Integer.parseInt(tempSplited[3]);
     }
 
+    /* add task into taskList */
     public static taskStructure insertNode (int i, String line) {
         String[] tempSplited = line.split("\\s+");
         tempSplited = line.split("\\s+");
@@ -64,6 +68,7 @@ public class Assignment1 {
         return temp;
     }
 
+    /* set DAG according to the remainder of input file */
     public static taskStructure updateTaskChildren (taskStructure node, String child) {
         if (! node.children.contains(child)) {
             node.setChildren(child);
@@ -78,7 +83,8 @@ public class Assignment1 {
         return node;
     }
 
-    public static void setDAG (String line) {
+    /* read reminder from input file */
+    public static void readDAG (String line) {
         String[] tempSplited = line.split("\\s+");
         tempSplited = line.split("\\s+");
         updateTaskChildren(taskStructureList.get(Integer.parseInt(tempSplited[0])), tempSplited[1]);
@@ -95,11 +101,8 @@ public class Assignment1 {
                 taskStructureList.add(insertNode(i, line));
             }
             while ((line = bufferedReader.readLine()) != null) {
-                setDAG(line);
+                readDAG(line);
             }
-            /*for(taskStructure taskStructure :taskStructureList) {
-                System.out.println("node is " + taskStructure.taskID + "value is " + taskStructure.value + ", time is " + taskStructure.time + ", parents are " + taskStructure.parents +", children are " + taskStructure.children);
-            }*/
             bufferedReader.close();
         }
         catch(FileNotFoundException ex) {
@@ -114,6 +117,8 @@ public class Assignment1 {
         }
     }
 
+
+    /* set root as source */
     public static taskStructure setRoot () {
         Assignment1 assignment1 = new Assignment1();
         taskStructure root = assignment1.new taskStructure();
@@ -126,6 +131,8 @@ public class Assignment1 {
         return root;
     }
 
+
+    /* goal test*/
     public static boolean goalTest (String taskSchedule) {
         actualValue = 0;
         actualTime = 0;
@@ -147,6 +154,8 @@ public class Assignment1 {
 
     }
 
+
+    /* check whether all the predecessors have been completed or not */
     public static boolean parentsVisited (String taskSchedule, String task) {
         for (String tempParent : taskStructureList.get(Integer.parseInt(task)).parents) {
             if (!taskSchedule.contains(tempParent)) {
@@ -156,6 +165,10 @@ public class Assignment1 {
         return true;
     }
 
+
+    /* when doing bfs, expanding current node and add no repeated states to the queue. Hash table is not used here.
+    I just add the task whose taskNumber is greater than the node to avoid the repeated states, just as Problem 3D. It is better to save memory.
+     */
     public static void bfsAddTask (String taskSchedule) {
         if (taskSchedule.equals("root")) {
             for (String tempTask : setRoot().children) {
@@ -177,10 +190,11 @@ public class Assignment1 {
 
             }
         }
-        System.out.println("Q is " + parentQueue);
+        /*System.out.println("Q is " + parentQueue);*/
     }
 
-    public static void addNextTask (String taskSchedule) {
+    /* when doing ids, expanding current node and add no repeated states to the queue. Use the same method as Problem 3D */
+    public static void idsAddTask (String taskSchedule) {
         if (taskSchedule.equals("root")) {
             for (int i = setRoot().children.size() - 1; i >= 0; i --) {
                 String tempStr = setRoot().children.get(i);
@@ -199,25 +213,29 @@ public class Assignment1 {
 
             }
         }
+        /*System.out.println(parentStack);*/
 
     }
 
+    /* when doing ids, check the current expanding level */
     public static int levelNumber (){
         int level = 0;
         level = parentStack.peek().length();
         return level;
     }
 
+    /* If bfs find the solution, return true */
     public static boolean BreathFirstSearch(String taskSchedule){
         if (parentQueue.size() < queueSize) {
-            System.out.println("task is " + taskSchedule);
             if (goalTest(taskSchedule)) {
-                System.out.println("Correct Schedule is " + taskSchedule + " " + actualValue + " " + actualTime);
+                char[] outArray = taskSchedule.toCharArray();
+                System.out.println(Arrays.toString(outArray) + " " + actualValue + " " + actualTime);
                 return true;
             } else {
                 bfsAddTask(taskSchedule);
                 if (parentQueue.size() < queueSize) {
                     String currentTaskSchedule = parentQueue.poll();
+                    stateNumber ++;
                     BreathFirstSearch(currentTaskSchedule);
                 } else {
                     return false;
@@ -227,13 +245,14 @@ public class Assignment1 {
         return false;
     }
 
-
+    /* check whether do IDS or not */
     public static boolean IDS (String taskSchedule){
         String source;
         if (!BreathFirstSearch(taskSchedule)) {
             while (!parentQueue.isEmpty()) {
                 source = parentQueue.poll();
                 int depth = source.length();
+                stateNumber ++;
                 if (IterativeDeepeningSearch(source, depth)) {
                     return true;
                 }
@@ -249,17 +268,17 @@ public class Assignment1 {
         parentStack.push(source);
         while (depth < taskNumber) {
             while (!parentStack.isEmpty()) {
-                System.out.println(parentStack);
                 if (levelNumber() == depth) {
                     temp = parentStack.pop();
                     if (goalTest(temp)) {
-                        System.out.println("Correct Schedule is " + temp + " " + actualValue + " " + actualTime);
+                        char[] outArray = temp.toCharArray();
+                        System.out.println(Arrays.toString(outArray) + " " + actualValue + " " + actualTime);
                         return true;
                     }
                 } else {
                     while ((!parentStack.isEmpty()) && (levelNumber() != depth)) {
                         temp = parentStack.pop();
-                        addNextTask(temp);
+                        idsAddTask(temp);
                     }
                 }
             }
@@ -277,8 +296,15 @@ public class Assignment1 {
             fileName = args[0];
         }
         readFile(fileName);
+
+        /* set the root */
         taskStructure root = setRoot();
+
+        /* Do bfs from the root */
         BreathFirstSearch(root.taskID);
+
+        /* Then do ids */
         IDS(root.taskID);
+        System.out.println("StateNumber :  " + stateNumber);
     }
 }

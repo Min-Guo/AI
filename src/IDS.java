@@ -15,6 +15,7 @@ public class IDS {
     public static ArrayList<taskStructure> taskStructureList = new ArrayList<taskStructure>();
     public static Stack<String> parentStack = new Stack<String>();
 
+
     public class taskStructure {
         private int value;
         private int time;
@@ -95,9 +96,6 @@ public class IDS {
             while ((line = bufferedReader.readLine()) != null) {
                 setDAG(line);
             }
-            /*for(taskStructure taskStructure :taskStructureList) {
-                System.out.println("node is " + taskStructure.taskID + "value is " + taskStructure.value + ", time is " + taskStructure.time + ", parents are " + taskStructure.parents +", children are " + taskStructure.children);
-            }*/
             bufferedReader.close();
         }
         catch(FileNotFoundException ex) {
@@ -112,6 +110,7 @@ public class IDS {
         }
     }
 
+
     public static taskStructure setRoot () {
         IDS ids = new IDS();
         taskStructure root = ids.new taskStructure();
@@ -123,6 +122,7 @@ public class IDS {
         }
         return root;
     }
+
 
     public static boolean goalTest (String taskSchedule) {
         int tempValue = 0;
@@ -144,6 +144,7 @@ public class IDS {
         }
 
     }
+
 
     public static boolean parentsVisited (String taskSchedule, String task) {
         for (String tempParent : taskStructureList.get(Integer.parseInt(task)).parents) {
