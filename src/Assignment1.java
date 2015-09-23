@@ -190,7 +190,7 @@ public class Assignment1 {
 
             }
         }
-        /*System.out.println("Q is " + parentQueue);*/
+        System.out.println("Q  " + parentQueue);
     }
 
     /* when doing ids, expanding current node and add no repeated states to the queue. Use the same method as Problem 3D */
@@ -213,7 +213,7 @@ public class Assignment1 {
 
             }
         }
-        /*System.out.println(parentStack);*/
+        System.out.println("Stack " + parentStack);
 
     }
 
@@ -227,6 +227,7 @@ public class Assignment1 {
     /* If bfs find the solution, return true */
     public static boolean BreathFirstSearch(String taskSchedule){
         if (parentQueue.size() < queueSize) {
+            stateNumber ++;
             if (goalTest(taskSchedule)) {
                 char[] outArray = taskSchedule.toCharArray();
                 System.out.println(Arrays.toString(outArray) + " " + actualValue + " " + actualTime);
@@ -235,7 +236,6 @@ public class Assignment1 {
                 bfsAddTask(taskSchedule);
                 if (parentQueue.size() < queueSize) {
                     String currentTaskSchedule = parentQueue.poll();
-                    stateNumber ++;
                     BreathFirstSearch(currentTaskSchedule);
                 } else {
                     return false;
@@ -252,7 +252,6 @@ public class Assignment1 {
             while (!parentQueue.isEmpty()) {
                 source = parentQueue.poll();
                 int depth = source.length();
-                stateNumber ++;
                 if (IterativeDeepeningSearch(source, depth)) {
                     return true;
                 }
@@ -270,6 +269,7 @@ public class Assignment1 {
             while (!parentStack.isEmpty()) {
                 if (levelNumber() == depth) {
                     temp = parentStack.pop();
+                    stateNumber ++;
                     if (goalTest(temp)) {
                         char[] outArray = temp.toCharArray();
                         System.out.println(Arrays.toString(outArray) + " " + actualValue + " " + actualTime);
