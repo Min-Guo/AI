@@ -1,10 +1,2 @@
-5 12 7 3
-0 3 3
-1 6 2
-2 4 3
-3 1 6
-4 4 1
-0 1
-2 3
-4 1
-4 3
+The first line
+The second line

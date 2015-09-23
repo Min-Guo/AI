@@ -11,6 +11,7 @@ public class CreateInput {
     public static int queueSize = 0;
     public static int value = 0;
     public static int time = 0;
+    public static ArrayList<Integer> taskList = new ArrayList<Integer>() ;
 
     public static void generateFirstLine (int taskNumber) {
         Random randTV = new Random();
@@ -28,6 +29,18 @@ public class CreateInput {
         time = randT.nextInt(taskNumber + 1);
     }
 
+    public static void taskArray (int taskNumber) {
+        Random rand = new Random();
+        for (int i = 0; i < taskNumber ; i++){
+            taskList.add(i);
+        }
+        for (int i = 0; i < taskNumber ; i++) {
+            int j = rand.nextInt((taskNumber - i) ) + i;
+            Collections.swap(taskList, i, j);
+        }
+    }
+
+
     public static void main (String [] args) throws Exception {
         String number = args[0];
         int taskNumber = Integer.parseInt(number);
@@ -38,7 +51,18 @@ public class CreateInput {
             assignVT(taskNumber);
             writer.println(i + " " + value + " " + time);
         }
-        writer.println("The second line");
+        Random randNumber = new Random();
+        int probability;
+        taskArray(taskNumber);
+        for (int i = 0; i < taskNumber; i++) {
+            for (int j = i + 1; j < taskNumber; j++) {
+                probability = randNumber.nextInt(2) + 1;
+                System.out.println("Pro: " + probability);
+                if (probability == 2) {
+                    writer.println(taskList.get(i) + " " + taskList.get(j));
+                }
+            }
+        }
         writer.close();
     }
 }
