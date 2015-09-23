@@ -271,7 +271,6 @@ public class Assignment1 {
         return false;
     }
 
-
     public static void main (String [] args) {
         String fileName = null;
         if(args.length > 0) {
