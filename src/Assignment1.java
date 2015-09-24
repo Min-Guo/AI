@@ -9,6 +9,7 @@ import java.lang.*;
 
 public class Assignment1 {
     public static int stateNumber = 0;
+    public static boolean bfsState = false;
     public static int taskNumber = 0;
     public static int targetValue = 0;
     public static int deadline = 0;
@@ -190,7 +191,7 @@ public class Assignment1 {
 
             }
         }
-        System.out.println("Q  " + parentQueue);
+        /*System.out.println("Q  " + parentQueue);*/
     }
 
     /* when doing ids, expanding current node and add no repeated states to the queue. Use the same method as Problem 3D */
@@ -204,7 +205,7 @@ public class Assignment1 {
             for (int i = taskStructureList.size() - 1; i >= 0; i--) {
                 taskStructure tempTask = taskStructureList.get(i);
                 if (!taskSchedule.contains(tempTask.taskID)) {
-                    if ((tempTask.parents.isEmpty()) && (Integer.parseInt(tempTask.taskID) > Character.getNumericValue(taskSchedule.charAt(taskSchedule.length() - 1)))) {
+                    if (tempTask.parents.isEmpty()) {
                         parentStack.push(taskSchedule + tempTask.taskID);
                     } else if ((!tempTask.parents.isEmpty()) && (parentsVisited(taskSchedule, tempTask.taskID))) {
                         parentStack.push(taskSchedule + tempTask.taskID);
@@ -213,7 +214,7 @@ public class Assignment1 {
 
             }
         }
-        System.out.println("Stack " + parentStack);
+        /*System.out.println("Stack " + parentStack);*/
 
     }
 
@@ -227,28 +228,31 @@ public class Assignment1 {
     /* If bfs find the solution, return true */
     public static boolean BreathFirstSearch(String taskSchedule){
         if (parentQueue.size() < queueSize) {
-            stateNumber ++;
             if (goalTest(taskSchedule)) {
                 char[] outArray = taskSchedule.toCharArray();
+                stateNumber = 1;
                 System.out.println(Arrays.toString(outArray) + " " + actualValue + " " + actualTime);
                 return true;
             } else {
                 bfsAddTask(taskSchedule);
                 if (parentQueue.size() < queueSize) {
                     String currentTaskSchedule = parentQueue.poll();
-                    BreathFirstSearch(currentTaskSchedule);
+                    if (BreathFirstSearch(currentTaskSchedule)) {
+                        return true;
+                    }
                 } else {
                     return false;
                 }
             }
         }
         return false;
+
     }
 
     /* check whether do IDS or not */
-    public static boolean IDS (String taskSchedule){
+    public static boolean IDS (){
         String source;
-        if (!BreathFirstSearch(taskSchedule)) {
+        if (!bfsState) {
             while (!parentQueue.isEmpty()) {
                 source = parentQueue.poll();
                 int depth = source.length();
@@ -269,9 +273,9 @@ public class Assignment1 {
             while (!parentStack.isEmpty()) {
                 if (levelNumber() == depth) {
                     temp = parentStack.pop();
-                    stateNumber ++;
                     if (goalTest(temp)) {
                         char[] outArray = temp.toCharArray();
+                        stateNumber = 1;
                         System.out.println(Arrays.toString(outArray) + " " + actualValue + " " + actualTime);
                         return true;
                     }
@@ -290,21 +294,23 @@ public class Assignment1 {
         return false;
     }
 
-    public static void main (String [] args) {
-        String fileName = null;
+    public static int main (String fileName) {
+        stateNumber = 0;
+        /*String fileName = null;
         if(args.length > 0) {
             fileName = args[0];
-        }
+        }*/
         readFile(fileName);
 
         /* set the root */
         taskStructure root = setRoot();
 
         /* Do bfs from the root */
-        BreathFirstSearch(root.taskID);
+        bfsState = BreathFirstSearch(root.taskID);
 
         /* Then do ids */
-        IDS(root.taskID);
-        System.out.println("StateNumber :  " + stateNumber);
+        IDS();
+        System.out.println("stateNumber is " + stateNumber);
+        return stateNumber;
     }
 }
